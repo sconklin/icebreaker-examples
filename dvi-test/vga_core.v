@@ -159,21 +159,21 @@ always @ ( posedge clk_dot ) begin : proc_ball
     // If out of bounds this VSYNC, but not previous VSYNC then invert the 
     // direction vectors. This effectively bounces a ball off perimeter wall
     if ( u0_vid_new_frame == 1 ) begin
-      dir_chg_sr <= { dir_chg_sr[2:0], 1'b0 };
+      dir_chg_sr <= { dir_chg_sr[2:0], 1'b0 }; // Shift dir chg one left
       ball_x_pos <= ball_x_pos + { {12{ball_x_dir[11]}}, ball_x_dir[11:0] };
       ball_y_pos <= ball_y_pos + { {12{ball_y_dir[11]}}, ball_y_dir[11:0] };
       
-      if          ( ball_x_pos[23:8] <  32 && dir_chg_sr == 4'd0 ) begin
+      if          ( ball_x_pos[23:8] <  32 && dir_chg_sr == 4'd0 ) begin // X < lower bound
         ball_x_dir    <= ~ ball_x_dir[11:0];
         dir_chg_sr[0] <= 1;
-      end else if ( ball_x_pos[23:8] > 768 && dir_chg_sr == 4'd0 ) begin
+      end else if ( ball_x_pos[23:8] > 768 && dir_chg_sr == 4'd0 ) begin // X > upper bound
         ball_x_dir    <= ~ ball_x_dir[11:0];
         dir_chg_sr[0] <= 1;
       end
-      if          ( ball_y_pos[23:8] <  32 && dir_chg_sr == 4'd0 ) begin
+      if          ( ball_y_pos[23:8] <  32 && dir_chg_sr == 4'd0 ) begin // Y < lower bound
         ball_y_dir    <= ~ ball_y_dir[11:0];
         dir_chg_sr[0] <= 1;
-      end else if ( ball_y_pos[23:8] > 550 && dir_chg_sr == 4'd0 ) begin
+      end else if ( ball_y_pos[23:8] > 450 && dir_chg_sr == 4'd0 ) begin // Y > upper bound was 550
         ball_y_dir    <= ~ ball_y_dir[11:0];
         dir_chg_sr[0] <= 1;
       end
